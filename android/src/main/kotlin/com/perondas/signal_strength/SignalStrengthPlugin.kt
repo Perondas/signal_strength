@@ -35,8 +35,6 @@ class SignalStrengthPlugin: FlutterPlugin, MethodCallHandler {
   @RequiresApi(Build.VERSION_CODES.Q)
   override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
     when (call.method) {
-        "getPlatformVersion" -> {
-          result.success("Android ${android.os.Build.VERSION.RELEASE}") }
         "getIsOnCellular" -> {
           val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
@@ -57,10 +55,17 @@ class SignalStrengthPlugin: FlutterPlugin, MethodCallHandler {
                   ?: return result.success(null)
           result.success(strengths.map { it.level })
         }
-        "getWifiSignalStrengths" -> {
+        "getWifiSignalStrength" -> {
           val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
-          val currentNetwork = cm.requestNetwork()
+            val currentNetwork = cm.activeNetwork
+            val capabilities = cm.getNetworkCapabilities(currentNetwork)
+            if (capabilities?.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) != true)
+            {
+                result.success(null)
+            } else {
+                result.success(capabilities.signalStrength)
+            }
         }
         else -> {
           result.notImplemented()

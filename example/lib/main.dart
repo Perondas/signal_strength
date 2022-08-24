@@ -16,35 +16,33 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
   final _signalStrengthPlugin = SignalStrength();
+
+  NetworkStats? _stats;
+  Timer? _timer;
 
   @override
   void initState() {
     super.initState();
-    initPlatformState();
+    _timer = Timer(const Duration(seconds: 1), _getNetworkStats);
   }
 
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initPlatformState() async {
-    String platformVersion;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    // We also handle the message potentially returning null.
-    try {
-      platformVersion =
-          await _signalStrengthPlugin.getPlatformVersion() ?? 'Unknown platform version';
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
-    }
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) return;
-
+  void _getNetworkStats() async {
+    _timer?.cancel();
+    var stats = NetworkStats(
+        await _signalStrengthPlugin.isOnCellular(),
+        await _signalStrengthPlugin.isOnWifi(),
+        await _signalStrengthPlugin.getWifiSignalStrength(),
+        await _signalStrengthPlugin.getCellularSignalStrength());
     setState(() {
-      _platformVersion = platformVersion;
+      _stats = stats;
     });
+    _timer = Timer(const Duration(seconds: 1), _getNetworkStats);
   }
 
   @override
@@ -55,9 +53,29 @@ class _MyAppState extends State<MyApp> {
           title: const Text('Plugin example app'),
         ),
         body: Center(
-          child: Text('Running on: $_platformVersion\n'),
+          child: Column(
+            children: [
+              if (_stats != null) ...[
+                Text('Cell strength: ${_stats?.cellularSignalStrength}'),
+                Text('Wifi strength: ${_stats?.wifiSignalStrength}'),
+                Text('On cellular: ${_stats?.hasCellular}'),
+                Text('On wifi: ${_stats?.hasWifi}'),
+              ] else ...[
+                const Text('No stats available')
+              ],
+            ],
+          ),
         ),
       ),
     );
   }
+}
+
+class NetworkStats {
+  NetworkStats(this.hasCellular, this.hasWifi, this.wifiSignalStrength,
+      this.cellularSignalStrength);
+  bool hasCellular;
+  bool hasWifi;
+  int? wifiSignalStrength;
+  List<int>? cellularSignalStrength;
 }

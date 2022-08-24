@@ -10,8 +10,25 @@ class MethodChannelSignalStrength extends SignalStrengthPlatform {
   final methodChannel = const MethodChannel('signal_strength');
 
   @override
-  Future<String?> getPlatformVersion() async {
-    final version = await methodChannel.invokeMethod<String>('getPlatformVersion');
-    return version;
+  Future<List<int>?> getCellularSignalStrength() async {
+    return await methodChannel
+        .invokeMethod<List<int>>('getCellSignalStrengths');
+  }
+
+  @override
+  Future<bool> getIsOnCellular() async {
+    var res = await methodChannel.invokeMethod<bool>('getIsOnCellular');
+    return res!;
+  }
+
+  @override
+  Future<bool> getIsOnWifi() async {
+    var res = await methodChannel.invokeMethod<bool>('getIsOnWifi');
+    return res!;
+  }
+
+  @override
+  Future<int?> getWifiSignalStrength() async {
+    return await methodChannel.invokeMethod<int>('getWifiSignalStrength');
   }
 }

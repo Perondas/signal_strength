@@ -14,7 +14,7 @@ abstract class SignalStrengthPlatform extends PlatformInterface {
   ///
   /// Defaults to [MethodChannelSignalStrength].
   static SignalStrengthPlatform get instance => _instance;
-  
+
   /// Platform-specific implementations should set this with their own
   /// platform-specific class that extends [SignalStrengthPlatform] when
   /// they register themselves.
@@ -23,7 +23,11 @@ abstract class SignalStrengthPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future<String?> getPlatformVersion() {
-    throw UnimplementedError('platformVersion() has not been implemented.');
-  }
+  Future<int?> getWifiSignalStrength();
+
+  Future<List<int>?> getCellularSignalStrength();
+
+  Future<bool> getIsOnWifi();
+
+  Future<bool> getIsOnCellular();
 }
