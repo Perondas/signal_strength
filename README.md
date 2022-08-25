@@ -1,7 +1,6 @@
 # signal_strength
 
-[![](http://flutter-badge.zaynjarvis.com/version/{PackageName})](https://pub.dartlang.org/packages/signal_strength)
-[![](http://flutter-badge.zaynjarvis.com/score/{PackageName})](https://pub.dartlang.org/packages/signal_strength)
+[![pub package](https://img.shields.io/pub/v/signal_strength.svg)](https://pub.dev/packages/signal_strength)
 
 A android flutter plugin to get the current signal strengths.
 Only works on Android.
