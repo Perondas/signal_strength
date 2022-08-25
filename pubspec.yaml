@@ -1,6 +1,6 @@
 name: signal_strength
 description: Get your phones current signal strengths. Currently only works on android.
-version: 0.0.3
+version: 0.0.4
 homepage: https://github.com/Perondas/signal_strength
 
 environment:

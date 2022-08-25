@@ -1,3 +1,7 @@
+## 0.0.4
+
+* Lowered the required SDK version
+
 ## 0.0.3
 
 * Fixed mistakes in the documentation.
