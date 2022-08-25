@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
@@ -11,8 +13,10 @@ class MethodChannelSignalStrength extends SignalStrengthPlatform {
 
   @override
   Future<List<int>?> getCellularSignalStrength() async {
-    return await methodChannel
-        .invokeMethod<List<int>>('getCellSignalStrengths');
+    var res = await methodChannel
+        .invokeMethod<List<dynamic>>('getCellSignalStrengths');
+    var r = res?.map((e) => e as int).toList();
+    return r;
   }
 
   @override
