@@ -13,8 +13,7 @@ class MethodChannelSignalStrength extends SignalStrengthPlatform {
   Future<List<int>?> getCellularSignalStrength() async {
     var res = await methodChannel
         .invokeMethod<List<dynamic>>('getCellSignalStrengths');
-    var r = res?.map((e) => e as int).toList();
-    return r;
+    return res?.map((e) => e as int).toList();
   }
 
   @override

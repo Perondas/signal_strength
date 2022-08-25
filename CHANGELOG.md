@@ -1,3 +1,9 @@
+## 0.0.3
+
+* Fixed mistakes in the documentation.
+## 0.0.2
+
+* Code cleanup
 ## 0.0.1
 
 * Initial release.
