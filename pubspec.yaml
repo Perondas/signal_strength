@@ -1,7 +1,7 @@
 name: signal_strength
-description: A new Flutter plugin project.
+description: Get your phones current signal strengths.
 version: 0.0.1
-homepage:
+homepage: https://github.com/Perondas/signal_strength
 
 environment:
   sdk: ">=2.17.6 <3.0.0"

@@ -1,15 +1,30 @@
 # signal_strength
 
-A new Flutter plugin project.
+A android flutter plugin to get the current signal strengths.
+Only works on Android.
 
-## Getting Started
+## Usage
 
-This project is a starting point for a Flutter
-[plug-in package](https://flutter.dev/developing-packages/),
-a specialized package that includes platform-specific implementation code for
-Android and/or iOS.
+Add to pubspec.yaml:
+```yaml
+signal_strength 0.0.1
+```
 
-For help getting started with Flutter development, view the
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Import:
+```dart
+import 'package:signal_strength/signal_strength.dart';
+```
 
+Usage:
+```dart
+var signalStrengthPlugin = SignalStrength();
+
+bool isOnCellular = await signalStrengthPlugin.isOnCellular(),
+bool isOnWifi = await signalStrengthPlugin.isOnWifi(),
+int? wifiStrength = await signalStrengthPlugin.getWifiSignalStrength(),
+List<int>? cellStrength = await signalStrengthPlugin.getCellularSignalStrength());
+```
+
+## Todo:
+* Ios implementation? 
+* Add more methods from the android SDK?
