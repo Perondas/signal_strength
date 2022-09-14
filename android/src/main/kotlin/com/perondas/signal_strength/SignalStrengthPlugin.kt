@@ -3,7 +3,9 @@ package com.perondas.signal_strength
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.net.wifi.WifiManager
 import android.os.Build
+import android.telephony.CellInfoGsm
 import android.telephony.CellSignalStrength
 import android.telephony.TelephonyManager
 import androidx.annotation.NonNull
@@ -13,6 +15,7 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
+import java.security.Permissions
 
 /** SignalStrengthPlugin */
 class SignalStrengthPlugin : FlutterPlugin, MethodCallHandler {
@@ -30,7 +33,7 @@ class SignalStrengthPlugin : FlutterPlugin, MethodCallHandler {
         context = flutterPluginBinding.applicationContext
     }
 
-    @RequiresApi(Build.VERSION_CODES.Q)
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
         when (call.method) {
             "getIsOnCellular" -> {
@@ -51,8 +54,15 @@ class SignalStrengthPlugin : FlutterPlugin, MethodCallHandler {
             }
             "getCellSignalStrengths" -> {
                 val telephonyManager = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-                val strengths: MutableList<CellSignalStrength> = telephonyManager.signalStrength?.cellSignalStrengths
-                        ?: return result.success(null)
+                val strengths: List<CellSignalStrength> = when {
+                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> {
+                        telephonyManager.signalStrength?.cellSignalStrengths
+                                ?: return result.success(null)
+                    }
+                    else -> {
+                        return result.success(null)
+                    }
+                }
                 val res: java.util.ArrayList<Int> = ArrayList(strengths.map { it.level }.toList())
                 result.success(res)
             }
@@ -64,7 +74,14 @@ class SignalStrengthPlugin : FlutterPlugin, MethodCallHandler {
                 if (capabilities?.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) != true) {
                     result.success(null)
                 } else {
-                    result.success(capabilities.signalStrength)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        result.success(capabilities.signalStrength)
+                    } else {
+                        val wifiManager = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
+                        val numberOfLevels = 5
+                        val wifiInfo = wifiManager.connectionInfo
+                        result.success(WifiManager.calculateSignalLevel(wifiInfo.rssi, numberOfLevels))
+                    }
                 }
             }
             else -> {
