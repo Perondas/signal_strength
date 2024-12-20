@@ -28,5 +28,5 @@ List<int>? cellStrength = await signalStrengthPlugin.getCellularSignalStrength()
 ```
 
 ## Todo:
-* Ios implementation? 
+* Ios implementation - not possible, see https://forums.developer.apple.com/forums/thread/721067
 * Add more methods from the android SDK?
